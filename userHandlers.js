@@ -30,8 +30,26 @@ const getUsersId = (req, res) => {
       res.status(500).send("Error retrieving data from database");
     });
 };
+const postUser = (req, res) => {
+  const { firstname, lastname, email, city, language, hashedPassword } =
+    req.body;
+
+  database
+    .query(
+      "INSERT INTO users(firstname, lastname, email, city, language, hashedPassword) VALUES (?, ?, ?, ?, ?, ?)",
+      [firstname, lastname, email, city, language, hashedPassword]
+    )
+    .then(([result]) => {
+      res.location(`/api/users/${result.insertId}`).sendStatus(201);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error saving the user");
+    });
+};
 
 module.exports = {
   getUsers,
   getUsersId,
+  postUser,
 };

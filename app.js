@@ -1,13 +1,16 @@
 require("dotenv").config();
-const port = process.env.APP_PORT ?? 5000;
 
 const express = require("express");
 
 const app = express();
 
-function welcome(req, res) {
+app.use(express.json());
+
+const port = process.env.APP_PORT ?? 5000;
+
+const welcome = (req, res) => {
   res.send("Welcome to my favourite movie list");
-}
+};
 
 app.get("/", welcome);
 
@@ -15,11 +18,13 @@ const movieHandlers = require("./movieHandlers");
 
 app.get("/api/movies", movieHandlers.getMovies);
 app.get("/api/movies/:id", movieHandlers.getMovieById);
+app.post("/api/movies", movieHandlers.postMovie);
 
 const userHandlers = require("./userHandlers");
 
 app.get("/api/users", userHandlers.getUsers);
-app.get("/api/users/:id", userHandlers.getUsersId);
+app.get("/api/users/:id", userHandlers.getUserById);
+app.post("/api/users", userHandlers.postUser);
 
 app.listen(port, (err) => {
   if (err) {
@@ -28,5 +33,3 @@ app.listen(port, (err) => {
     console.log(`Server is listening on ${port}`);
   }
 });
-
-app.post("/api/movies", movieHandlers.postMovie);
